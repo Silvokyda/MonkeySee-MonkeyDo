@@ -52,12 +52,12 @@ const App = () => {
           autoCompleteType="email"
           onChangeText={(text) => {}}
           onFocus={() => {
-            openEye();
-            setEmailFocused(true);
+            closeEye();
+            setPasswordFocused(true);
           }}
           onBlur={() => {
-            closeEye();
-            setEmailFocused(false);
+            openEye();
+            setPasswordFocused(false);
           }}
         />
         <TextInput
@@ -66,12 +66,12 @@ const App = () => {
           secureTextEntry={true}
           onChangeText={(text) => {}}
           onFocus={() => {
-            closeEye();
-            setPasswordFocused(true);
+            openEye();
+            setEmailFocused(true);
           }}
           onBlur={() => {
-            openEye();
-            setPasswordFocused(false);
+            closeEye();
+            setEmailFocused(false);
           }}
         />
         <TouchableOpacity style={styles.button}>
