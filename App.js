@@ -4,6 +4,8 @@ import { View, Text, TextInput, TouchableOpacity, Image, StyleSheet, KeyboardAvo
 const App = () => {
   const [handsVisible, setHandsVisible] = useState(true);
   const [slideAnimation] = useState(new Animated.Value(0));
+  const [emailFocused, setEmailFocused] = useState(false);
+  const [passwordFocused, setPasswordFocused] = useState(false);
 
   const closeEye = () => {
     setHandsVisible(false);
@@ -42,24 +44,35 @@ const App = () => {
         </View>
       </Animated.View>
       <View style={styles.formcon}>
-        <TextInput
-          style={styles.input}
+      <TextInput
+          style={[styles.input, emailFocused && styles.inputFocused]}
           placeholder="Email"
           keyboardType="email-address"
           autoCapitalize="none"
           autoCompleteType="email"
           onChangeText={(text) => {}}
-          onFocus={() => closeEye()}
-          onBlur={() => openEye()}
+          onFocus={() => {
+            openEye();
+            setEmailFocused(true);
+          }}
+          onBlur={() => {
+            closeEye();
+            setEmailFocused(false);
+          }}
         />
         <TextInput
-          style={styles.input}
+          style={[styles.input, passwordFocused && styles.inputFocused]}
           placeholder="Password"
           secureTextEntry={true}
           onChangeText={(text) => {}}
-          onFocus={() => openEye()}
-          onBlur={() => closeEye()}
-          
+          onFocus={() => {
+            closeEye();
+            setPasswordFocused(true);
+          }}
+          onBlur={() => {
+            openEye();
+            setPasswordFocused(false);
+          }}
         />
         <TouchableOpacity style={styles.button}>
           <Text style={styles.buttonText}>LOGIN</Text>
@@ -111,6 +124,14 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     paddingLeft: 10,
     borderRadius: 45,
+  },
+  inputFocused: {
+    borderColor: 'blue', 
+    shadowColor: 'blue', 
+    shadowOffset: { width: 0, height: 0 }, 
+    shadowOpacity: 0.5, 
+    shadowRadius: 10,
+    elevation: 5, 
   },
   button: {
     backgroundColor: 'blue',
