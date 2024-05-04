@@ -1,26 +1,46 @@
-import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, Image, StyleSheet, KeyboardAvoidingView } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, TextInput, TouchableOpacity, Image, StyleSheet, KeyboardAvoidingView, Animated } from 'react-native';
 
 const App = () => {
-  const [handsStyle, setHandsStyle] = useState({ display: 'flex' });
+  const [handsVisible, setHandsVisible] = useState(true);
+  const [slideAnimation] = useState(new Animated.Value(0));
 
   const closeEye = () => {
-    setHandsStyle({ display: 'flex' });
+    setHandsVisible(false);
+    Animated.timing(slideAnimation, {
+      toValue: 1,
+      duration: 500,
+      useNativeDriver: true,
+    }).start();
   };
 
   const openEye = () => {
-    setHandsStyle({ display: 'none' });
+    setHandsVisible(true);
+    Animated.timing(slideAnimation, {
+      toValue: 0,
+      duration: 500,
+      useNativeDriver: true,
+    }).start();
   };
+
+  useEffect(() => {
+    closeEye(); 
+  }, []);
+
+  const handsPosition = slideAnimation.interpolate({
+    inputRange: [0, 1],
+    outputRange: [0, 200], 
+  });
 
   return (
     <KeyboardAvoidingView style={styles.container} behavior="padding">
-      <View style={styles.animcon}>
-        <Image style={[styles.hands, handsStyle]} source={require('./assets/hands.png')} />
+      <Animated.View style={[styles.animcon, { transform: [{ translateY: handsPosition }] }]}>
+        {handsVisible && <Image style={styles.hands} source={require('./assets/hands.png')} />}
         <View style={styles.gifContainer}>
-          <Image style={[styles.gif, { opacity: handsStyle.display === 'flex' ? 1 : 0 }]} source={require('./assets/monkey_pwd.gif')} />
-          <Image style={[styles.gif1, { opacity: handsStyle.display === 'none' ? 1 : 0 }]} source={require('./assets/monkey.gif')} />
+          <Image style={[styles.gif, { opacity: handsVisible ? 1 : 0 }]} source={require('./assets/monkey_pwd.gif')} />
+          <Image style={[styles.gif1, { opacity: !handsVisible ? 1 : 0 }]} source={require('./assets/monkey.gif')} />
         </View>
-      </View>
+      </Animated.View>
       <View style={styles.formcon}>
         <TextInput
           style={styles.input}
@@ -29,16 +49,17 @@ const App = () => {
           autoCapitalize="none"
           autoCompleteType="email"
           onChangeText={(text) => {}}
-          onFocus={() => openEye()}
-          onBlur={() => closeEye()}
+          onFocus={() => closeEye()}
+          onBlur={() => openEye()}
         />
         <TextInput
           style={styles.input}
           placeholder="Password"
           secureTextEntry={true}
           onChangeText={(text) => {}}
-          onFocus={() => closeEye()}
-          onBlur={() => openEye()}
+          onFocus={() => openEye()}
+          onBlur={() => closeEye()}
+          
         />
         <TouchableOpacity style={styles.button}>
           <Text style={styles.buttonText}>LOGIN</Text>
@@ -72,7 +93,7 @@ const styles = StyleSheet.create({
   },
   gif1: {
     width: 200,
-    bottom: 200,
+    bottom: 250,
   },
   gif: {
     width: 200,
